@@ -24,11 +24,11 @@ while principal > 0:
     
 
   
-    print(months, round(total_paid, 2), round(principal, 2))
+    print(f'{months:3d}, {round(total_paid, 2):9.2f}, {round(principal, 2):9.2f}')
 
 if principal < 0:
     total_paid += principal
     print('Last payment', round(payment + principal, 2))
 
-print('Total paid', round(total_paid,2))
-print('Months ', months)
+print(f'Total paid {round(total_paid,2)}')
+print(f'Months     {months}')
