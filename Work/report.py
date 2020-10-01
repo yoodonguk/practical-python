@@ -39,6 +39,20 @@ def read_prices(filename):
 
     return prices
 
+def make_report(portfolio, prices):
+    report = []
+
+    for p in portfolio:
+        names = p['names']
+        shares = p['shares']
+        price = p['price']
+        current_price = prices[names]
+
+        change = price - prices[names]
+        report.append((names, shares, current_price, change))
+
+    return report
+
 # if len(sys.argv) == 2:
 #     filename = sys.argv[1]
 # else:
@@ -49,23 +63,16 @@ def read_prices(filename):
 
 portfolio = read_portfolio('Data/portfolio.csv')
 prices = read_prices('Data/prices.csv')
+report = make_report(portfolio, prices)
 
-total_cost = 0.0
-for s in portfolio:
-    total_cost += s['shares'] * s['price']
+headers = (f'{"Names":>10s} {"Shares":>10s} {"Price":>10s} {"Change":>10s}')
+seperator = (f'{"-" * 10} {"-" * 10} {"-" * 10} {"-" * 10}')
 
-print('Total cost', total_cost)
+print(headers)
+print(seperator)
+#print(f'{"Names":>10s} {"Shares":>10s} {"Price":>10s} {"Change":>10s}')
+#print(f'{"-" * 10} {"-" * 10} {"-" * 10} {"-" * 10}')
 
-total_value = 0.0
-for s in portfolio:
-    total_value += s['shares'] * prices[s['names']]
-
-print('Curent value', total_value)
-print('Gain', total_value - total_cost)
-
-for p in portfolio:
-    names = p['names']
-    shares = p['shares']
-    price = p['price']
-    t_price = prices[names]
-    print(f'{names:4s} {shares:5d}주 매입가 {price:7.2f} 현재가 {t_price:7.2f} 평가손익 {(t_price - price) * shares:10.2f}')
+for names, shares, price, change in report:
+    price = f'${price:.2f}'
+    print(f'{names:>10s} {shares:>10d} {price:>10s} {change:>10.2f}')    
