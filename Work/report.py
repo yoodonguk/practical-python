@@ -5,12 +5,14 @@
 import csv, sys
 from fileparse import parse_csv
 
-def read_portfolio(filename):    
-    return parse_csv(filename, select=['name','shares','price'], types=[str,int,float])
+def read_portfolio(filename):
+    with open(filename) as lines:
+        return parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
 
 
 def read_prices(filename):
-    return dict(parse_csv(filename, types=[str,float], has_headers=False))
+    with open(filename) as lines:
+        return dict(parse_csv(lines, types=[str,float], has_headers=False))
 
 
 def make_report(portfolio, prices):
@@ -41,8 +43,18 @@ def portfolio_report(portfolio_csv, prices_csv):
     report = make_report(portfolio, prices)
     print_report(report)
  
-files = ['Data/portfolio.csv']
-for name in files:
-    print(f'{name:-^43s}')
-    portfolio_report(name, 'Data/prices.csv')
-    print()
+
+def main(args):
+    if len(args) == 3:
+        portfolio = args[1]
+        price = args[2]
+    else:
+        portfolio = 'Data/portfolio.csv'
+        price = 'Data/prices.csv'
+    
+    portfolio_report(portfolio, price)
+ 
+
+if __name__ == '__main__':
+    import sys
+    main(sys.argv) 
