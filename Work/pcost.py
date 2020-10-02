@@ -7,8 +7,8 @@ from report import read_portfolio
 
 def portfolio_cost(filename):
     portfolio = read_portfolio(filename)
-    
-    return sum([s['shares'] * s['price'] for s in portfolio])
+
+    return sum([s.cost() for s in portfolio])
 
 def main(args):
     if len(args) == 2:
