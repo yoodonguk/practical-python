@@ -4,21 +4,18 @@
 
 import csv, sys
 from fileparse import parse_csv
-import stock
+from stock import Stock
+from portfolio import Portfolio
 import tableformat
 
-def read_portfolio(filename):
+def read_portfolio(filename, **opts):
     with open(filename) as lines:
-        portdicts = parse_csv(lines, 
-                                        select=['name','shares','price'], 
-                                        types=[str,int,float])
-        portfolio = [ stock.Stock(d['name'], d['shares'], d['price']) for d in portdicts]
-        return portfolio
+        return Portfolio.from_csv(lines, **opts)
 
 
-def read_prices(filename):
+def read_prices(filename, **opts):
     with open(filename) as lines:
-        return dict(parse_csv(lines, types=[str,float], has_headers=False))
+        return dict(parse_csv(lines, types=[str,float], has_headers=False, **opts))
 
 
 def make_report(portfolio, prices):
@@ -39,18 +36,6 @@ def print_report(reportdata, formatter):
     for name, shares, price, change in reportdata:
         rowdata = [ name, str(shares), f'{price:0.2f}', f'{change:0.2f}' ]
         formatter.row(rowdata)
-    
-    
-    
-    #headers = (f'{"Names":>10s} {"Shares":>10s} {"Price":>10s} {"Change":>10s}')
-    #seperator = (f'{"-" * 10} {"-" * 10} {"-" * 10} {"-" * 10}')
-
-    #print(headers)
-    #print(seperator)
-
-    #for names, shares, price, change in reportdata:
-    #    price = f'${price:.2f}'
-    #    print(f'{names:>10s} {shares:>10d} {price:>10s} {change:>10.2f}')   
 
 
 def portfolio_report(portfoliofile, pricefile, fmt='txt'):
@@ -70,16 +55,9 @@ def portfolio_report(portfoliofile, pricefile, fmt='txt'):
  
 
 def main(args):
-    if len(args) == 4:
-        portfolio = args[1]
-        price = args[2]
-        fmt = args[3]
-    else:
-        portfolio = 'Data/portfolio.csv'
-        price = 'Data/prices.csv'
-        fmt = 'txt'
-    
-    portfolio_report(portfolio, price, fmt)
+    if len(args) != 4:
+        raise SystemExit('Usage: %s portfile pricefile format' % args[0])
+    portfolio_report(args[1], args[2], args[3])
  
 
 if __name__ == '__main__':
