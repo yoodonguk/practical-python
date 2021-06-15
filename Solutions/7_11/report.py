@@ -51,10 +51,6 @@ def portfolio_report(portfoliofile, pricefile, fmt='txt'):
     prices = read_prices(pricefile)
 
     # Create the report data
-    print('****')
-    for p in portfolio:
-        print(p)
-
     report = make_report(portfolio, prices)
 
     # Print it out
